@@ -116,9 +116,20 @@ const logoutUser = (req,res)=>{
 }
 
 const getCurrentUser = (req,res) =>{
+        const {_id,name,email} = req.user
+        if(!_id || !name || !email){
+            return res.status(401).json({
+                success: false,
+                message:"User not found"
+            })
+        }
         res.status(200).json({
-        success: true,
-        message: "Hello user"
+            success: true,
+            user:{
+                id: _id,
+                name,
+                email
+            }
     })
 }
 
