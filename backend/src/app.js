@@ -1,6 +1,7 @@
 const express = require("express")
 const cors = require("cors")
 const cookieParser = require('cookie-parser')
+const upload = require("./middleware/upload.middleware")
 
 const app = express();
 
@@ -38,6 +39,14 @@ app.get("/api/v1/health",(req,res)=>{
         timestamp: new Date().toISOString(),
     });
 });
+
+app.post("/upload",upload.single("resume"),(req,res)=>{
+     console.log(req.file)
+     return res.status(200).json({
+        success: true,
+        message: "File uploaded"
+     })
+})
 
 // 404 handler
 app.use((req, res) => {

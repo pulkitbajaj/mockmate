@@ -6,3 +6,4 @@ uploads/
 coverage/
 logs/
 *.log
+src/middleware/validatePdf.middleware.js
