@@ -82,7 +82,7 @@ const loginUser = async(req,res)=>{
         if(!compare){
             return res.status(401).json({
                 success: false,
-                message: "Invalid email or password"
+                message: "Invalid password"
             })
         }
 
@@ -109,10 +109,25 @@ const loginUser = async(req,res)=>{
 }
 
 const logoutUser = (req,res)=>{
+    try{
+        res.clearCookie('token',{
+            httpOnly:true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/"
+        })
         res.status(200).json({
-        success: true,
-        message: "User logged out"
-    })
+            success: true,
+            message: "User logged out successfully"
+        })
+    } catch(error){
+        console.error("Error ocurred logging out",error.message);
+
+        return res.status(500).json({
+            success: false,
+            message:"Error occurred logging out"
+        })
+    }
 }
 
 const getCurrentUser = (req,res) =>{
