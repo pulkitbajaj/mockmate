@@ -58,9 +58,19 @@ const getAllResumes = (req,res)=>{
 }
 
 const getResume = (req,res) =>{
+    const {_id, originalName, mimeType, size, createdAt, updatedAt} = req.resume;
+
     res.status(200).json({
         success:true,
-        message: `Here is your resume with ${req.params.id}`
+        message: `Here is your resume`,
+        resume: {
+            id: _id,
+            originalName,
+            mimeType,
+            size,
+            createdAt,
+            updatedAt
+        }
     })
 }
 
