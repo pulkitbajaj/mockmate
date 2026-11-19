@@ -91,11 +91,52 @@ const getResume = (req,res) =>{
     })
 }
 
-const deleteResume = (req,res) =>{
-    res.status(200).json({
-        success: true,
-        message:`Resume with ID ${req.params.id} deleted successfully`
-    })
+const deleteResume = async (req,res) =>{
+    try{
+        const resume= req.resume
+        if(!resume){
+            return res.status(404).json({
+                success: false,
+                message: "Resume not found"
+            })
+        }
+        const deletedResume =  await Resume.findByIdAndDelete(resume._id)
+        if(!deletedResume){
+            return res.status(404).json({
+                success: false,
+                message:"Resume not found"
+            })
+        }
+
+        try {
+            await fs.unlink(deletedResume.filePath);
+        } catch (fileError) {
+            if (fileError.code !== "ENOENT") {
+                console.error(
+                    "File cleanup failed:",
+                    fileError.message
+                );
+
+                return res.status(200).json({
+                    success: true,
+                    message: "Resume record deleted, but file cleanup failed",
+                    fileCleanupPending: true
+                });
+            }
+        }
+
+        return res.status(200).json({
+            success: true,
+            message:`Resume deleted successfully`
+        })
+    } catch(error){
+        console.error("Error occurred: ",error.message)
+
+        return res.status(500).json({
+            success: false,
+            message:"Error occurred deleting resume"
+        })
+    }
 }
 
 module.exports = {uploadResume,getAllResumes,getResume,deleteResume}
