@@ -50,11 +50,28 @@ const uploadResume = async(req,res) =>{
     }
 }
 
-const getAllResumes = (req,res)=>{
-    res.status(200).json({
-        success: true,
-        message: "All resumes displayed"
-    })
+const getAllResumes = async(req,res)=>{
+    
+    try{
+         
+        const userId= req.user._id;
+        
+        const resumes = await Resume.find({user:userId}).sort({createdAt:-1}).select("_id originalName mimeType size createdAt updatedAt")
+        
+        res.status(200).json({
+            success: true,
+            message: "All resumes displayed",
+            resumes: resumes,
+            length : resumes.length
+        })
+    } catch(error){
+        console.error("Error occurred ",error.message);
+
+        return res.status(500).json({
+            success: false,
+            message:"Internal Server Error"
+        })
+    } 
 }
 
 const getResume = (req,res) =>{

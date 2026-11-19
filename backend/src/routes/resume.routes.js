@@ -8,7 +8,7 @@ const{ uploadResume, getAllResumes,getResume, deleteResume} = require("../contro
 
 router.post("/",protect,upload.single("resume"),uploadResume);
 
-router.get("/",getAllResumes);
+router.get("/",protect,getAllResumes);
 
 router.get("/:id",protect,authorizeResumeOwner,getResume);
 
